@@ -69,6 +69,7 @@ class Sudoku:
             var for var in self.variables if var.value is None]
 
         # another optimization: choose the first variable with the least possible values
+        # Minimum-remaining-values (MRV), from AI course 6
         unassigned_variables.sort(key=lambda x: len(x.domain))
         random_var = unassigned_variables[0]
         # random_var = random.choice(unassigned_variables)
@@ -118,9 +119,6 @@ class Sudoku:
             # self.board[variable.line][variable.column] = 0
             for neighbour in neighbours:
                 neighbour.domain.add(value_removed)
-
-        # TODO
-        # if any of the neighbours doesn't have a choice left, that sucks, yo
 
         return True
 
