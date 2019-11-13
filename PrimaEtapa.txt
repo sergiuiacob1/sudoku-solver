@@ -1,0 +1,38 @@
+1. Modelarea problemei alese ca o 
+problemă de satisfacere a constrângerilor
+
+Variabile: X[i][j] va lua valori de la 0 la 9 acestea fiind pozitionate pe tabla
+la coordonatele generate [i][j] : 
+        (0, 0), (0, 1), ..., (0, 8), (1, 0), ..., (8, 8)
+
+    
+
+    self.variables = [Variable(pos[0], pos[1])
+        for pos in list(product([i for i in range(0, 9)], repeat=2))]
+
+Restrictii:
+    Fiecarea variabila trebuie sa aiba un numaru unic in raport cu vecinii de
+    pe aceeasi coloana, de pe acelasi rand si din aceeasi casuta.
+
+    Pentru o asignare consistenta se vor face verificari pentru fiecare variabila.
+
+    --------------------------------------------------------------------------------------------
+
+        def is_consistent(self):
+        """According to the course, the board is consistent if it respects all constraints"""
+        for variable in self.variables:
+            if variable.value is None:
+                continue
+            neighbours = self.get_variable_neighbours(variable)
+            # if my constraint
+            if any(neighbour.value == variable.value for neighbour in neighbours):
+                self.print_board()
+                print(
+                    f'Not consistent on position ({variable.line + 1}, {variable.column + 1})')
+                return False
+        return True
+
+    --------------------------------------------------------------------------------------------
+
+    La formarea tablei de joc, aceasta este inconsistenta ( nu respecta 
+    restrictiile jocului). 
