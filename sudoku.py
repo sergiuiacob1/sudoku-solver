@@ -69,12 +69,13 @@ class Sudoku:
             var for var in self.variables if var.value is None]
 
         # another optimization: choose the first variable with the least possible values
-        unassigned_variables.sort(key = lambda x: len(x.domain))
+        unassigned_variables.sort(key=lambda x: len(x.domain))
         random_var = unassigned_variables[0]
         # random_var = random.choice(unassigned_variables)
 
         # trying to give it each value
-        for value in tuple(random_var.domain):
+        possible_values = list(random_var.domain)
+        for value in possible_values:
             random_var.value = value
             self.board[random_var.line][random_var.column] = value
             random_var.domain.discard(value)
@@ -89,7 +90,7 @@ class Sudoku:
             random_var.value = None
             self.board[random_var.line][random_var.column] = 0
             random_var.domain.add(value)
-        
+
         return False
 
     def forward_checking(self, variable: Variable, value_added=None, value_removed=None):
@@ -147,8 +148,8 @@ class Sudoku:
             self.board[i] = [0 for _ in range(0, 9)]
         # list(product(...)) will generate tuples: (0, 0), (0, 1), ..., (0, 8), (1, 0), ..., (1, 8), ..., (8, 8)
         # which are positions on the board
-        # self.variables = [Variable(pos[0], pos[1])
-        #                   for pos in list(product([i for i in range(0, 9)], repeat=2))]
+        self.variables = [Variable(pos[0], pos[1])
+                          for pos in list(product([i for i in range(0, 9)], repeat=2))]
 
         i = 0
         with open('board.txt', 'r') as f:
@@ -157,6 +158,8 @@ class Sudoku:
                 numbers = [int(x) for x in numbers]
                 self.board[i] = numbers
                 i += 1
+                if i == 9:
+                    break
 
         self.variables = []
         for i in range(0, 9):
@@ -207,20 +210,11 @@ class Sudoku:
             # if any(len(tuple(neighbour.domain)) == 1 and value_assigned in neighbour and neighbour.value is None for neighbour in neighbours):
             #     continue
 
+            random_var.value = value_assigned
+            random_var.domain.discard(value_assigned)
             unassigned_variables.remove(choice)
             self.forward_checking(random_var, value_added=value_assigned)
             i += 1
-
-        # for i in range(0, no_of_completed_cells):
-        #     # pick a random unassigned variable
-        #     choice = random.choice(unassigned_variables)
-        #     unassigned_variables.remove(choice)
-        #     # Choose a random value to assign to this value
-        #     value_assigned = random.choice(
-        #         tuple(self.variables[choice].domain))
-        #     # Now do forward checking
-        #     self.forward_checking(
-        #         self.variables[choice], value_added=value_assigned)
 
         # Put the values on the board, yo!
         for i in range(0, len(self.variables)):
