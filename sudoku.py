@@ -117,7 +117,7 @@ class Sudoku:
             # Remove the value from the board, yo!
             # self.board[variable.line][variable.column] = 0
             for neighbour in neighbours:
-                neighbour.domain.add(value_added)
+                neighbour.domain.add(value_removed)
 
         # TODO
         # if any of the neighbours doesn't have a choice left, that sucks, yo
